@@ -1,14 +1,14 @@
 # server.py
-from flask import Flask, jsonify
-from servoController import *
+from flask import Flask
+from flask_socketio import SocketIO
 
 app = Flask(__name__)
+socketio = SocketIO(app, cors_allowed_origins="*")
 
-@app.route('/data', methods=['GET'])
-def get_data():
-    data = {'message': 'Hello from Flask server!'}
-    testServo()
-    return jsonify(data)
+@socketio.on('message')
+def handle_message(message):
+    print('Received message: ' + message)
+    socketio.emit('response', 'Message received: ' + message)
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+    socketio.run(app, debug=True)
