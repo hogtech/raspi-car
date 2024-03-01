@@ -1,14 +1,16 @@
-# server.py
-from flask import Flask
-from flask_socketio import SocketIO
+from flask import Flask, jsonify
+from flask_socketio import SocketIO, emit
+from servoController import *
 
 app = Flask(__name__)
-socketio = SocketIO(app, cors_allowed_origins="*")
+app.config['SECRET_KEY'] = 'justasecretkeythatishouldputhere'
+socketio = SocketIO(app)
 
-@socketio.on('message')
-def handle_message(message):
-    print('Received message: ' + message)
-    socketio.emit('response', 'Message received: ' + message)
+@socketio.on('connect')
+def test_connect():
+    print('Client connected')
+    testServo()
+    emit('response', {'message': 'Hello from Flask server!'})
 
 if __name__ == '__main__':
-    socketio.run(app, debug=True)
+    socketio.run(app, debug=True, host='0.0.0.0')
