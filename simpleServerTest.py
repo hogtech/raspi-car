@@ -9,8 +9,13 @@ socketio = SocketIO(app)
 @socketio.on('connect')
 def test_connect():
     print('Client connected')
-    testServo()
-    emit('response', {'message': 'Hello from Flask server!'})
+    #testServo()
+    #emit('response', 'Socket connected properly')
+
+@socketio.on('message')
+def handle_message(message):
+    print('Received message: ' + message)
+    turnServo(int(message))
 
 if __name__ == '__main__':
     socketio.run(app, debug=True, host='0.0.0.0')
